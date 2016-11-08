@@ -11,49 +11,40 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
-
 plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
-version = "1.6.0"
-group= "tonius.simplyjetpacks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "SimplyJetpacks"
+
+version = "1.5.3"
+if (hasProperty('appendBuildNumber')) {
+    version = version + "-" + appendBuildNumber
+}
+group = "tonius.simplyjetpacks"
+archivesBaseName = "SimplyJetpacks-MC1.7.10"
 
 minecraft {
-    version = "1.10.2-12.18.1.2011"
+    version = "1.7.10-10.13.4.1558-1.7.10"
     runDir = "run"
-    mappings = "snapshot_20160518"
-    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    
+    replaceIn "SimplyJetpacks.java"
+    replace "@VERSION@", project.version
 }
 
-repositories
-{
-    maven {
-        name = "The JEI Repo"
-        url = "http://dvs1.progwml6.com/files/maven"
-    }
-    maven
-    {
-        name = "Maven Repo"
-        url = "http://mobiusstrip.eu/maven"
+jar {
+    manifest {
+        attributes 'FMLAT': 'simplyjetpacks_at.cfg'
     }
 }
 
-dependencies {
-   deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-   deobfCompile "mezz.jei:jei_1.10.2:3.7.8.234"
-
-
-}
-
-processResources
-{
+processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
+    
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
+    
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
